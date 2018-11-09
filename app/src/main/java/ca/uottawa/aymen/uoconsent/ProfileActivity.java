@@ -1,12 +1,15 @@
 package ca.uottawa.aymen.uoconsent;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -25,71 +29,24 @@ import com.rm.freedrawview.ResizeBehaviour;
 import ca.uottawa.aymen.uoconsent.Tools;
 
 public class ProfileActivity extends AppCompatActivity {
-    FreeDrawView mSignatureView;
 
 
+
+    private ImageView imgFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        mSignatureView = (FreeDrawView) findViewById(R.id.your_id);
-
-        // Setup the View
-        mSignatureView.setPaintColor(Color.BLACK);
-
-        mSignatureView.setPaintWidthPx(getResources().getDimensionPixelSize(R.dimen.paint_width));
-        //mSignatureView.setPaintWidthPx(12);
-        mSignatureView.setPaintWidthDp(getResources().getDimension(R.dimen.paint_width));
-        //mSignatureView.setPaintWidthDp(6);
-        mSignatureView.setPaintAlpha(255);// from 0 to 255
-        mSignatureView.setResizeBehaviour(ResizeBehaviour.CROP);// Must be one of ResizeBehaviour
-        // values;
-
-        // This listener will be notified every time the path done and undone count changes
-        mSignatureView.setPathRedoUndoCountChangeListener(new PathRedoUndoCountChangeListener() {
-            @Override
-            public void onUndoCountChanged(int undoCount) {
-                // The undoCount is the number of the paths that can be undone
-            }
-
-            @Override
-            public void onRedoCountChanged(int redoCount) {
-                // The redoCount is the number of path removed that can be redrawn
-            }
-        });
-        // This listener will be notified every time a new path has been drawn
-        mSignatureView.setOnPathDrawnListener(new PathDrawnListener() {
-            @Override
-            public void onNewPathDrawn() {
-                // The user has finished drawing a path
-            }
-
-            @Override
-            public void onPathStart() {
-                // The user has started drawing a path
-            }
-        });
-
-        // This will take a screenshot of the current drawn content of the view
-        mSignatureView.getDrawScreenshot(new FreeDrawView.DrawCreatorListener() {
-            @Override
-            public void onDrawCreated(Bitmap draw) {
-                // The draw Bitmap is the drawn content of the View
-            }
-
-            @Override
-            public void onDrawCreationError() {
-                // Something went wrong creating the bitmap, should never
-                // happen unless the async task has been canceled
-            }
-        });
-
-
-
         initToolbar();
         showTermServicesDialog();
+        imgFavorite = findViewById(R.id.signature);
+        imgFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSignature();
+            }
+        });
 
 
     }
@@ -154,5 +111,94 @@ public class ProfileActivity extends AppCompatActivity {
 
         dialog.show();
         dialog.getWindow().setAttributes(lp);
+    }
+
+    private AlertDialog dialog;
+
+    private void showSignature() {
+
+
+        final AlertDialog.Builder builder  = new AlertDialog.Builder(this);
+
+
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.signature, null);
+        builder.setView(dialogView);
+
+
+        Button btnClear, btnValidate;
+        ImageButton btnClose;
+
+        btnValidate = dialogView.findViewById(R.id.bt_accept);
+        btnClear = dialogView.findViewById(R.id.bt_decline);
+        btnClose =  dialogView.findViewById(R.id.bt_close);
+
+
+        final FreeDrawView mSignatureView =  dialogView.findViewById(R.id.your_id);
+
+        // Setup the View
+        mSignatureView.setPaintColor(ContextCompat.getColor(getApplicationContext(), android.R.color.black));
+        mSignatureView.setPaintWidthPx(getResources().getDimensionPixelSize(R.dimen.paint_width));
+        //mSignatureView.setPaintWidthPx(12);
+        mSignatureView.setPaintWidthDp(getResources().getDimension(R.dimen.paint_width));
+        //mSignatureView.setPaintWidthDp(6);
+        mSignatureView.setPaintAlpha(255);// from 0 to 255
+        mSignatureView.setResizeBehaviour(ResizeBehaviour.FIT_XY);// Must be one of ResizeBehaviour
+
+
+        btnValidate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Button Accept Clicked", Toast.LENGTH_SHORT).show();
+                mSignatureView.getDrawScreenshot(new FreeDrawView.DrawCreatorListener() {
+                    @Override
+                    public void onDrawCreated(Bitmap draw) {
+                        // The draw Bitmap is the drawn content of the View
+                        imgFavorite.setImageBitmap(draw);
+                    }
+
+                    @Override
+                    public void onDrawCreationError() {
+                        // Something went wrong creating the bitmap, should never
+                        // happen unless the async task has been canceled
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
+
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSignatureView.clearDraw();
+            }
+        });
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        builder.setCancelable(true);
+        dialog = builder.create();
+        dialog.show();
+
+        // values;
+
+        // This listener will be notified every time the path done and undone count changes
+        mSignatureView.setPathRedoUndoCountChangeListener(new PathRedoUndoCountChangeListener() {
+            @Override
+            public void onUndoCountChanged(int undoCount) {
+                // The undoCount is the number of the paths that can be undone
+            }
+
+            @Override
+            public void onRedoCountChanged(int redoCount) {
+                // The redoCount is the number of path removed that can be redrawn
+            }
+        });
+
+
     }
 }

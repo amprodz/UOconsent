@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/teal_500"
+            android:background="@color/garnet_300"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -71,12 +71,21 @@
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColorHint="@color/grey_40">
+                            android:layout_marginLeft="-4dp"
+                            android:layout_marginRight="-4dp"
+                            android:theme="@style/EditText.Green"
 
-                            <android.support.v7.widget.AppCompatEditText
+                            >
+
+                            <android.support.design.widget.TextInputEditText
+                                android:id="@+id/edt_user"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Name" />
+                                android:hint="Name"
+                                android:inputType="textEmailAddress"
+                                android:maxLines="1"
+                                android:singleLine="true"
+                                />
 
                         </android.support.design.widget.TextInputLayout>
 
@@ -120,12 +129,21 @@
                             <android.support.design.widget.TextInputLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textColorHint="@color/grey_40">
+                                android:layout_marginLeft="-4dp"
+                                android:layout_marginRight="-4dp"
+                                android:theme="@style/EditText.Green"
 
-                                <android.support.v7.widget.AppCompatEditText
+                                >
+
+                                <android.support.design.widget.TextInputEditText
+                                    android:id="@+id/edt_email"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:hint="Email" />
+                                    android:hint="Email"
+                                    android:inputType="textEmailAddress"
+                                    android:maxLines="1"
+                                    android:singleLine="true"
+                                    />
 
                             </android.support.design.widget.TextInputLayout>
 
@@ -148,27 +166,19 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/spacing_large" />
-
-                    <com.rm.freedrawview.FreeDrawView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/your_id"
+                    <ImageView
+                        android:id="@+id/signature"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/my_border"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ssignature"
+                        android:background="@drawable/my_border"/>
 
-                        app:paintAlpha="255"
-                        app:paintColor="@color/grey_1000"
-                        app:paintWidth="4dp"
-                        app:resizeBehaviour="crop"
-                        >
 
-                    </com.rm.freedrawview.FreeDrawView>
 
 
 
                 </LinearLayout>
+
 
 
             </LinearLayout>

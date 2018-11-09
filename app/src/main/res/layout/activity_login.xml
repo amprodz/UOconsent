@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </LinearLayout>
     <LinearLayout
         android:layout_width="330dp"
         android:layout_height="match_parent"
@@ -17,9 +17,10 @@
         android:orientation="vertical"
         android:padding="@dimen/spacing_large">
 
+
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/spacing_middle" />
+            android:layout_height="@dimen/spacing_xxxlarge" />
 
         <ImageView
             android:layout_width="140dp"
@@ -39,7 +40,7 @@
             android:layout_marginTop="@dimen/spacing_medium"
             android:text="Welcome to UOconsent"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:textColor="@color/teal_500"
+            android:textColor="@color/garnet_300"
             android:textStyle="bold" />
 
         <TextView
@@ -55,57 +56,55 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="USERNAME"
-            android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-            android:textColor="@color/blue_grey_200" />
-
-        <android.support.design.widget.TextInputEditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-4dp"
             android:layout_marginRight="-4dp"
-            android:inputType="text"
-            android:maxLength="50"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/blue_grey_800"
-            android:theme="@style/EditText.Green" />
+            android:theme="@style/EditText.Green"
 
+            >
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edt_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true"
+                />
+
+        </android.support.design.widget.TextInputLayout>
         <View
             android:layout_width="0dp"
             android:layout_height="@dimen/spacing_mlarge" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PASSWORD"
-            android:textAlignment="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-            android:textColor="@color/blue_grey_200" />
-
-        <android.support.design.widget.TextInputEditText
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-4dp"
             android:layout_marginRight="-4dp"
-            android:inputType="textPassword"
-            android:maxLength="50"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="@color/blue_grey_800"
-            android:theme="@style/EditText.Green" />
+            android:theme="@style/EditText.Green"
+            app:passwordToggleEnabled="true"
+            >
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password "
+                android:inputType="textPassword" />
+
+        </android.support.design.widget.TextInputLayout>
 
 
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/spacing_mxlarge" />
+            android:layout_height="@dimen/spacing_xxxlarge" />
 
         <Button
+            android:id="@+id/sign_in"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginLeft="-4dp"
