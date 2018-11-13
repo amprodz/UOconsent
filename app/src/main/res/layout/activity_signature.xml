@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:id="@+id/layoutTitle"
         android:paddingBottom="@dimen/spacing_middle"
         android:paddingLeft="@dimen/spacing_medium"
         android:paddingRight="@dimen/spacing_medium"
@@ -29,20 +30,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Consent to use photographic, video and audio recordings"
+                android:text="Please add your signature "
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Title"
-                android:textColor="@color/garnet_300"
+                android:textColor="@color/garnet_400"
                 android:textStyle="bold"
                 app:fontFamily="serif" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="last update January 2018"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
-                android:textColor="@color/garnet_400"
-                android:textStyle="italic"
-                app:fontFamily="serif" />
 
         </LinearLayout>
 
@@ -61,43 +54,45 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/garnet_500" />
+        android:background="@color/teal_100" />
 
-    <android.support.v4.widget.NestedScrollView
+
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/layoutTitle"
+        android:layout_above="@+id/layoutButtons"
+        android:padding="@dimen/spacing_mlarge"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/my_border">
 
-        <LinearLayout
+        <com.rm.freedrawview.FreeDrawView
+            android:id="@+id/your_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/spacing_mlarge">
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            app:paintAlpha="255"
+            app:paintColor="@color/grey_1000"
+            app:paintWidth="4dp"
+            app:resizeBehaviour="crop"/>
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:lineSpacingExtra="@dimen/spacing_small"
-                android:text="@string/very_long_lorem_ipsum_2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/grey_60"
-                app:fontFamily="serif" />
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/garnet_500" />
+        android:background="@color/teal_100" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:weightSum="2"
+        android:id="@+id/layoutButtons"
+        android:layout_alignParentBottom="true"
         android:paddingBottom="@dimen/spacing_middle"
         android:paddingLeft="@dimen/spacing_mlarge"
         android:paddingRight="@dimen/spacing_mlarge"
@@ -110,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_rect_teal"
-            android:text="Accept"
+            android:text="Validate"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:textColor="@android:color/white"
@@ -127,11 +122,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_rect_teal_outline"
-            android:text="Decline"
+            android:text="Clear"
             android:textStyle="bold"
             android:textAllCaps="false"
             android:textColor="@color/garnet_300"
             app:fontFamily="serif" />
 
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

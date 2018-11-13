@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -34,9 +35,17 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import ca.uottawa.aymen.uoconsent.model.Person;
+
 
 public class Tools {
 
@@ -309,4 +318,28 @@ public class Tools {
         }
     }
 
+
+
+    public static void savePersonsList(Context context, List<Person> AppList){
+        Gson gson = new Gson();
+        String jsonApps = gson.toJson(AppList);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("jsonPersons", jsonApps).apply();
+    }
+
+    public static List<Person> getPersonsList(Context context) {
+        List<Person> apps;
+        SharedPreferences mPrefs = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("jsonPersons", "");
+        if (json.isEmpty()) {
+            apps = new ArrayList<Person>();
+        } else {
+            Type type = new TypeToken<List<Person>>() {
+            }.getType();
+            apps = gson.fromJson(json, type);
+        }
+        return apps;
+    }
 }
