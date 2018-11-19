@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -38,6 +39,20 @@
             android:name=".activities.PhotoshootActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.PersonListActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ca.uottawa.aymen.uoconsent"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <!-- ressource file to create -->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+
     </application>
+
 
 </manifest>

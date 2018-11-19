@@ -38,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -341,5 +342,43 @@ public class Tools {
             apps = gson.fromJson(json, type);
         }
         return apps;
+    }
+    public static void saveShootInfo(Context context, List<String> AppList){
+        Gson gson = new Gson();
+        String jsonApps = gson.toJson(AppList);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("MyShoot", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("jsonInfo", jsonApps).apply();
+    }
+    public static List<String> getShootInfo(Context context) {
+        List<String> apps;
+        SharedPreferences mPrefs = context.getSharedPreferences("MyShoot", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("jsonInfo", "");
+        if (json.isEmpty()) {
+            apps = new ArrayList<String>();
+        } else {
+            Type type = new TypeToken<List<Person>>() {
+            }.getType();
+            apps = gson.fromJson(json, type);
+        }
+        return apps;
+
+    }
+    public static boolean delete(File path) {
+        boolean result = true;
+        if (path.exists()) {
+            if (path.isDirectory()) {
+                for (File child : path.listFiles()) {
+                    result &= delete(child);
+                }
+                result &= path.delete(); // Delete empty directory.
+            } else if (path.isFile()) {
+                result &= path.delete();
+            }
+            return result;
+        } else {
+            return false;
+        }
     }
 }

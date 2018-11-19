@@ -1,7 +1,9 @@
 package ca.uottawa.aymen.uoconsent.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,8 @@ import java.util.List;
 import ca.uottawa.aymen.uoconsent.ImageUtil;
 import ca.uottawa.aymen.uoconsent.R;
 import ca.uottawa.aymen.uoconsent.Tools;
+import ca.uottawa.aymen.uoconsent.activities.PhotoshootActivity;
+import ca.uottawa.aymen.uoconsent.activities.ProfileActivity;
 import ca.uottawa.aymen.uoconsent.model.Person;
 
 public class PersonsListAdapter extends RecyclerView.Adapter<PersonsListAdapter.ViewHolder> {
@@ -42,7 +46,7 @@ public class PersonsListAdapter extends RecyclerView.Adapter<PersonsListAdapter.
     public void onBindViewHolder(@NonNull PersonsListAdapter.ViewHolder viewHolder, int i) {
         Person person = personList.get(i);
         viewHolder.name.setText(person.getName());
-        viewHolder.image.setImageBitmap(ImageUtil.convert(person.getPicture()));
+        viewHolder.image.setImageBitmap(BitmapFactory.decodeFile(person.getPicture()));
 
 
     }
@@ -67,6 +71,14 @@ public class PersonsListAdapter extends RecyclerView.Adapter<PersonsListAdapter.
             image = (ImageView) v.findViewById(R.id.image);
             lyt_parent = (View) v.findViewById(R.id.lyt_parent);
             modify = (Button) v.findViewById(R.id.modify);
+            modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context,ProfileActivity.class);
+                    intent.putExtra("position", getAdapterPosition());
+                    context.startActivity(intent);
+                }
+            });
 
 
 

@@ -6,11 +6,7 @@ public class Person {
 
     String name,email;
     String picture,signature;
-    public boolean expanded = false;
-    public boolean parent = false;
 
-    // flag when item swiped
-    public boolean swiped = false;
 
     public Person(String name,String email, String picture, String signature){
         this.name=name;
