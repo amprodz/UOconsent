@@ -1,16 +1,24 @@
 package ca.uottawa.aymen.uoconsent.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.se.omapi.Session;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+
+import java.util.Properties;
 
 import ca.uottawa.aymen.uoconsent.ImageUtil;
 import ca.uottawa.aymen.uoconsent.R;
@@ -24,6 +32,8 @@ public class PersonListActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private PersonsListAdapter adapter;
     private FloatingActionButton btnAdd;
+    Session session;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +79,53 @@ public class PersonListActivity extends AppCompatActivity {
             this.finish();
         } else if (item.getItemId() == R.id.action_done) {
 
-            this.finish();
+            onCreateDialog();
+
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onCreateDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.create_email, null);
+        final EditText receiver = view.findViewById(R.id.to);
+        final EditText cc = view.findViewById(R.id.cc1);
+
+
+        builder.setTitle("Send email");
+        builder.setView(view);
+        builder.setPositiveButton("Send",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.setNegativeButton("Cancel", null);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String receiverText = receiver.getText().toString();
+                String ccText = cc.getText().toString();
+
+                if (true) {
+
+
+                    dialog.dismiss();
+                    Intent intent = new Intent (PersonListActivity.this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                }
+            }
+        });
     }
 
 

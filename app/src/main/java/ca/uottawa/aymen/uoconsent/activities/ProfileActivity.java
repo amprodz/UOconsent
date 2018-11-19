@@ -46,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private ImageView imgFavorite;
+    File photoFile ;
     private ImageView imgPerson;
     private Bitmap photoBitmap;
     FloatingActionButton btnSelfie;
@@ -59,7 +60,9 @@ public class ProfileActivity extends AppCompatActivity {
     private  static int i=0;
     private String mCurrentPhotoPath;
     private Uri photoURI;
-    private int position;
+    Boolean modified=false;
+    int position;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,6 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         initToolbar();
         Bundle extras = getIntent().getExtras();
-        int position;
         personList = Tools.getPersonsList(getApplicationContext());
         intent = new Intent(ProfileActivity.this, SignatureActivity.class);
         imgFavorite = findViewById(R.id.signature);
@@ -83,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
         edtName=findViewById(R.id.edt_user);
 
         if (extras != null) {
+            modified=true;
             position=extras.getInt("position");
             edtName.setText(personList.get(position).getName());
             edtEmail.setText(personList.get(position).getEmail());
@@ -171,11 +174,20 @@ public class ProfileActivity extends AppCompatActivity {
             String profileStr = mCurrentPhotoPath;
             String signatureStr = ImageUtil.convert(SignatureActivity.bitmap);
             Person person = new Person(name, email, profileStr, signatureStr);
-            if (photoBitmap != null && SignatureActivity.bitmap != null) {
-                i++;
-                Log.i("tagged",String.valueOf(i));
-                personList.add(person);
+            if (!modified){
+                if (photoBitmap != null && SignatureActivity.bitmap != null) {
+                    personList.add(person);
+
+                }
             }
+            else{
+                personList.get(position).setName(name);
+                personList.get(position).setEmail(email);
+                personList.get(position).setPicture(mCurrentPhotoPath);
+                personList.get(position).setSignature(signatureStr);
+            }
+
+
             Tools.savePersonsList(getApplicationContext(), personList);
             startActivity(new Intent(ProfileActivity.this, PersonListActivity.class));
             this.finish();
@@ -226,14 +238,12 @@ public class ProfileActivity extends AppCompatActivity {
     public void takePhoto(){
 
         Intent cameraTintent = new Intent();
-        File photoFile = null;
-        
-        try {
-            photoFile=createImage();
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-            ex.printStackTrace();
-        }
+
+        String imageFileName = "JPEG_" + i + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        photoFile = new File(storageDir , imageFileName + ".jpg");
+        mCurrentPhotoPath = photoFile.getAbsolutePath();
+
         if (photoFile != null) {
             photoURI = FileProvider.getUriForFile(this, "ca.uottawa.aymen.uoconsent", photoFile);
         }
@@ -241,16 +251,8 @@ public class ProfileActivity extends AppCompatActivity {
         cameraTintent.putExtra("android.intent.extras.CAMERA_FACING",1);
         cameraTintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraTintent,CAMERA_REQUEST);
-        Tools.delete(photoFile);
     }
-    public File createImage() throws IOException {
-        String imageFileName = "JPEG_" + i + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = new File(storageDir , imageFileName + ".jpg");
-        mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
 
-    }
     private void rotateImage(Bitmap bitmap){
         ExifInterface exitInterface = null;
         try{
@@ -287,6 +289,8 @@ public class ProfileActivity extends AppCompatActivity {
         photoBitmap= BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         imgPerson.setImageBitmap(photoBitmap);
     }
+
+
 
 
 
