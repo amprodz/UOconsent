@@ -46,7 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private ImageView imgFavorite;
-    File photoFile ;
     private ImageView imgPerson;
     private Bitmap photoBitmap;
     FloatingActionButton btnSelfie;
@@ -60,8 +59,8 @@ public class ProfileActivity extends AppCompatActivity {
     private  static int i=0;
     private String mCurrentPhotoPath;
     private Uri photoURI;
+    private int position;
     Boolean modified=false;
-    int position;
 
 
     @Override
@@ -69,6 +68,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         initToolbar();
+        PersonListActivity.personListActivity.finish();
+
         Bundle extras = getIntent().getExtras();
         personList = Tools.getPersonsList(getApplicationContext());
         intent = new Intent(ProfileActivity.this, SignatureActivity.class);
@@ -93,7 +94,6 @@ public class ProfileActivity extends AppCompatActivity {
             imgFavorite.setImageBitmap((ImageUtil.convert(personList.get(position).getSignature())));
         }
         else{
-            showTermServicesDialog();
             SignatureActivity.bitmap=null;
 
         }
@@ -171,23 +171,29 @@ public class ProfileActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_done) {
             name = edtName.getText().toString();
             email = edtEmail.getText().toString();
-            String profileStr = mCurrentPhotoPath;
-            String signatureStr = ImageUtil.convert(SignatureActivity.bitmap);
-            Person person = new Person(name, email, profileStr, signatureStr);
-            if (!modified){
-                if (photoBitmap != null && SignatureActivity.bitmap != null) {
-                    personList.add(person);
+            String profileStr;
+            String signatureStr;
+            if(modified){
+                signatureStr=personList.get(position).getSignature();
+                profileStr=personList.get(position).getPicture();
+                photoBitmap=BitmapFactory.decodeFile(personList.get(position).getPicture());
 
-                }
             }
             else{
-                personList.get(position).setName(name);
-                personList.get(position).setEmail(email);
-                personList.get(position).setPicture(mCurrentPhotoPath);
-                personList.get(position).setSignature(signatureStr);
+                signatureStr = ImageUtil.convert(SignatureActivity.bitmap);
+                profileStr=mCurrentPhotoPath;
+
             }
+            Person person = new Person(name, email, profileStr, signatureStr);
 
-
+            if (photoBitmap != null && SignatureActivity.bitmap != null) {
+                i++;
+                Log.i("tagged",String.valueOf(i));
+                personList.add(person);
+                if(modified){
+                    personList.remove(position);
+                }
+            }
             Tools.savePersonsList(getApplicationContext(), personList);
             startActivity(new Intent(ProfileActivity.this, PersonListActivity.class));
             this.finish();
@@ -198,52 +204,18 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-    private void showTermServicesDialog() {
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
-        dialog.setContentView(R.layout.dialog_term_of_services);
-        dialog.setCancelable(true);
 
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
-
-        ((ImageButton) dialog.findViewById(R.id.bt_close)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        ((Button) dialog.findViewById(R.id.bt_accept)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button Accept Clicked", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
-
-        ((Button) dialog.findViewById(R.id.bt_decline)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Button Decline Clicked", Toast.LENGTH_SHORT).show();
-                System.exit(0);
-            }
-        });
-
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
-    }
     public void takePhoto(){
 
         Intent cameraTintent = new Intent();
+        File photoFile = null;
 
-        String imageFileName = "JPEG_" + i + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        photoFile = new File(storageDir , imageFileName + ".jpg");
-        mCurrentPhotoPath = photoFile.getAbsolutePath();
-
+        try {
+            photoFile=createImage();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            ex.printStackTrace();
+        }
         if (photoFile != null) {
             photoURI = FileProvider.getUriForFile(this, "ca.uottawa.aymen.uoconsent", photoFile);
         }
@@ -251,8 +223,16 @@ public class ProfileActivity extends AppCompatActivity {
         cameraTintent.putExtra("android.intent.extras.CAMERA_FACING",1);
         cameraTintent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraTintent,CAMERA_REQUEST);
+        Tools.delete(photoFile);
     }
+    public File createImage() throws IOException {
+        String imageFileName = "JPEG_" + i + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = new File(storageDir , imageFileName + ".jpg");
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
 
+    }
     private void rotateImage(Bitmap bitmap){
         ExifInterface exitInterface = null;
         try{
@@ -289,8 +269,6 @@ public class ProfileActivity extends AppCompatActivity {
         photoBitmap= BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         imgPerson.setImageBitmap(photoBitmap);
     }
-
-
 
 
 

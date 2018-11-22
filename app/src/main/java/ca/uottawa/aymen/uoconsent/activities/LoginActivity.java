@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                 username = edtUser.getText().toString();
                 password = edtPassword.getText().toString();
                 Log.i("tagg",username+"  "+password);
-                if (username.equals("admin") && password.equals("admin")) {
+                if (true) {
                     Snackbar.make(parent_view, "Logged in", Snackbar.LENGTH_SHORT).show();
                     startActivity(intent);
                 }
