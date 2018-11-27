@@ -71,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
         PersonListActivity.personListActivity.finish();
 
         Bundle extras = getIntent().getExtras();
-        personList = Tools.getPersonsList(getApplicationContext());
+        personList = Tools.getPersonsList(getApplicationContext(),"MyPref","jsonPersons");
         intent = new Intent(ProfileActivity.this, SignatureActivity.class);
         imgFavorite = findViewById(R.id.signature);
         imgFavorite.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
                     personList.remove(position);
                 }
             }
-            Tools.savePersonsList(getApplicationContext(), personList);
+            Tools.savePersonsList(getApplicationContext(), personList,"MyPref","jsonPersons");
             startActivity(new Intent(ProfileActivity.this, PersonListActivity.class));
             this.finish();
 

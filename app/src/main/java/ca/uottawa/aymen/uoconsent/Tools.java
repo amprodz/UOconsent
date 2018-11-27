@@ -42,6 +42,8 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -68,14 +70,7 @@ public class Tools {
         }
     }
 
-    public static void setSystemBarColorDialog(Context act, Dialog dialog, @ColorRes int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = dialog.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(act.getResources().getColor(color));
-        }
-    }
+
 
     public static void setSystemBarLight(Activity act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -319,21 +314,30 @@ public class Tools {
         }
     }
 
+    static class Sortbyname implements Comparator<Person>{
 
-
-    public static void savePersonsList(Context context, List<Person> AppList){
-        Gson gson = new Gson();
-        String jsonApps = gson.toJson(AppList);
-        SharedPreferences sharedPreferences = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("jsonPersons", jsonApps).apply();
+        @Override
+        public int compare(Person o1, Person o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 
-    public static List<Person> getPersonsList(Context context) {
-        List<Person> apps;
-        SharedPreferences mPrefs = context.getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+
+
+    public static void savePersonsList(Context context, List<Person> AppList,String name,String key){
         Gson gson = new Gson();
-        String json = mPrefs.getString("jsonPersons", "");
+        Collections.sort(AppList, new Sortbyname());
+        String jsonApps = gson.toJson(AppList);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, jsonApps).apply();
+    }
+
+    public static List<Person> getPersonsList(Context context,String name,String key) {
+        List<Person> apps;
+        SharedPreferences mPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString(key, "");
         if (json.isEmpty()) {
             apps = new ArrayList<Person>();
         } else {

@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         parent_view = findViewById(android.R.id.content);
 
-        Tools.setSystemBarColor(this, android.R.color.white);
+        //Tools.setSystemBarColor(this, android.R.color.white);
         Tools.setSystemBarLight(this);
         edtUser = findViewById(R.id.edt_user);
         edtUser.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         getApplicationContext().getSharedPreferences("MyPref", 0).edit().clear().commit();
-        List<Person> list = Tools.getPersonsList(getApplicationContext());
+        List<Person> list = Tools.getPersonsList(getApplicationContext(),"MyPref","jsonPersons");
 
     }
 }
